@@ -18,22 +18,7 @@ const ingredientReducer = (currentIngredients, action) => {
       throw new Error('Opss!Should Never Run!');
   }
 }
-const httpReducer = (httpPrevState, action) => {
 
-  switch (action.type) {
-    case 'SEND':
-      return { loading: true, error: null };
-    case 'RESPONSE':
-      return { ...httpPrevState, loading: false }
-    case 'ERROR':
-      return { loading: false, error: action.errorData }
-    case 'CLEAR':
-      return { ...httpPrevState, error: null }
-    default:
-      throw new Error('Opss!Should Never Run!');
-  }
-
-}
 
 
 const Ingredients = () => {
