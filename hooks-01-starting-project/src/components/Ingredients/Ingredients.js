@@ -23,7 +23,7 @@ const ingredientReducer = (currentIngredients, action) => {
 const Ingredients = () => {
   //will not be recreated due to use of redurers. but methods are recreated
   const [userIngredients, dispatch] = useReducer(ingredientReducer, []);//empty array is for initial state
-  const {loading,data,error, sendRequest} =useHttp()
+  const { loading, data, error, sendRequest, reqExtra,reqIdentifier } = useHttp()
   //const [userIngredients, setUserIngredients] = useState([]);
   //const [isLoading, setIsLoading] = useState(false);
   // const [error, setError] = useState();
@@ -39,37 +39,49 @@ const Ingredients = () => {
     dispatch({ type: 'SET', ingredients: filteredIngredients });//Action da   return action.ingredients; olduğu için : ile verdik
   }, []);
 
-  
-
   useEffect(() => {
-    console.log('RENDERING', userIngredients)
-  }, [userIngredients]);
+     console.log('RENDERING', reqIdentifier)
+    if (!loading && !error && reqIdentifier === 'REMOVE_INGREDIENT') {
+      dispatch({ type: 'DELETE', id: reqExtra })
+    } else if  (!loading && !error && reqIdentifier === 'ADD_INGREDIENT'){
+      dispatch({ type: 'ADD', ingredient: { id: Math.floor(Math.random() * 1000), ...reqExtra } });
+    }
+  }, [data, reqExtra,loading,error]);
 
 
-  const addIngredient = useCallback(ingredient => {
+  const addIngredientHandler = useCallback(ingredient => {
+    sendRequest('https://react-hooks-demo-d6b03-default-rtdb.firebaseio.com/ingredients.json'
+      , 'POST'
+      , JSON.stringify(ingredient)
+      , ingredient
+      ,'ADD_INGREDIENT'
+    )
     // setIsLoading(true);
     //not a dependency due to use of hooks
-    
+
   }, [])
   //
-  const removeIngredient = useCallback(ingredientId => {
+  const removeIngredientHandler = useCallback(ingredientId => {
     // setIsLoading(true);
-    sendRequest(`https://react-hooks-demo-d6b03-default-rtdb.firebaseio.com/ingredients/${ingredientId}.json`,
-    'DELETE',null);
-  
+    sendRequest(`https://react-hooks-demo-d6b03-default-rtdb.firebaseio.com/ingredients/${ingredientId}.json`
+      ,'DELETE'
+      , null
+      ,ingredientId
+      ,'REMOVE_INGREDIENT');
+
 
   }, [sendRequest]);
 
-  const closeError = useCallback ( ()=> {
-  
+  const closeError = useCallback(() => {
+
     // setError(null);
-  },[])
+  }, [])
 
   const ingList = useMemo(() => {
     return (
-      <IngredientList ingredients={userIngredients} onRemoveItem={removeIngredient} />
+      <IngredientList ingredients={userIngredients} onRemoveItem={removeIngredientHandler} />
     );
-  },[userIngredients,removeIngredient])//in fact removeIngredient not chnage due to useCallback
+  }, [userIngredients, removeIngredientHandler])//in fact removeIngredient not chnage due to useCallback
 
   return (
     <div className="App">
@@ -77,7 +89,7 @@ const Ingredients = () => {
         <button onClick={logoutHandler}>Logout</button>
       </div>
       {error && <ErrorModal onClose={closeError}> </ErrorModal>}
-      <IngredientForm loading={loading} onAddIngredient={addIngredient} />
+      <IngredientForm loading={loading} onAddIngredient={addIngredientHandler} />
       <section>
         <Search onLoadIngredients={filteredIngredientsHandler} />
         {ingList}

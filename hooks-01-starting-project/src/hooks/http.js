@@ -1,12 +1,13 @@
 
 import { useReducer,useCallback } from 'react'
+
 const httpReducer = (httpPrevState, action) => {
 
     switch (action.type) {
         case 'SEND':
-            return { loading: true, error: null, data: null };
+            return { loading: true, error: null, data: null , extra:null, identifier:action.identifier};
         case 'RESPONSE':
-            return { ...httpPrevState, loading: false, data: action.responseData }
+            return { ...httpPrevState, loading: false, data: action.responseData, extra:action.extra }
         case 'ERROR':
             return { loading: false, error: action.errorData }
         case 'CLEAR':
@@ -28,12 +29,14 @@ const useHttp = () => {
             loading: false,
             error: false,
             data: null,
+            extra:null,
+            identifier:null
         })
 
-    const sendRequest = useCallback( (url, method, body) => {
+    const sendRequest = useCallback( (url, method, body,reqExtra,reqIdentifier) => {
         // fetch(`https://react-hooks-demo-d6b03-default-rtdb.firebaseio.com/ingredients/${ingredientId}.json`,
 
-        dispatchHttp({ type: 'SEND' })
+        dispatchHttp({ type: 'SEND',identifier :reqIdentifier })
         fetch(url,
             {
                 method: method,
@@ -42,7 +45,7 @@ const useHttp = () => {
             }).then(response => {
                 return response.json();
             }).then(responseData => {
-                dispatchHttp({ type: 'RESPONSE', responseData: responseData })
+                dispatchHttp({ type: 'RESPONSE', responseData: responseData, extra:reqExtra,identifier:reqIdentifier })
             }).catch(error => {
                 //  setIsLoading(false);
                 //  setError(error.message)
@@ -55,7 +58,9 @@ const useHttp = () => {
         loading: httpState.loading,
         data:httpState.data,
          error: httpState.error, 
-         sendRequest:sendRequest
+         sendRequest:sendRequest,
+         reqExtra:httpState.extra,
+         reqIdentifier:httpState.identifier
       
         }
 }
