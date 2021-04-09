@@ -1,6 +1,14 @@
 
 import { useReducer,useCallback } from 'react'
 
+const initialState={
+    loading: false,
+    error: false,
+    data: null,
+    extra:null,
+    identifier:null
+}
+
 const httpReducer = (httpPrevState, action) => {
 
     switch (action.type) {
@@ -11,7 +19,7 @@ const httpReducer = (httpPrevState, action) => {
         case 'ERROR':
             return { loading: false, error: action.errorData }
         case 'CLEAR':
-            return { ...httpPrevState, error: null }
+            return initialState; 
         default:
             throw new Error('Opss!Should Never Run!');
     }
@@ -24,16 +32,13 @@ const httpReducer = (httpPrevState, action) => {
 
 const useHttp = () => {
 
-    const [httpState, dispatchHttp] = useReducer(httpReducer,
-        {
-            loading: false,
-            error: false,
-            data: null,
-            extra:null,
-            identifier:null
-        })
+    const [httpState, dispatchHttp] = useReducer(httpReducer,initialState)
 
-    const sendRequest = useCallback( (url, method, body,reqExtra,reqIdentifier) => {
+    const clear = useCallback( () =>{
+        dispatchHttp({type:'CLEAR'})
+    },[]);
+
+    const sendRequest = useCallback ( (url, method, body,reqExtra,reqIdentifier) => {
         // fetch(`https://react-hooks-demo-d6b03-default-rtdb.firebaseio.com/ingredients/${ingredientId}.json`,
 
         dispatchHttp({ type: 'SEND',identifier :reqIdentifier })
@@ -60,8 +65,8 @@ const useHttp = () => {
          error: httpState.error, 
          sendRequest:sendRequest,
          reqExtra:httpState.extra,
-         reqIdentifier:httpState.identifier
-      
+         reqIdentifier:httpState.identifier,
+        clear:clear
         }
 }
 

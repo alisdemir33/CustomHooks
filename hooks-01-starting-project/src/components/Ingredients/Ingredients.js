@@ -23,7 +23,7 @@ const ingredientReducer = (currentIngredients, action) => {
 const Ingredients = () => {
   //will not be recreated due to use of redurers. but methods are recreated
   const [userIngredients, dispatch] = useReducer(ingredientReducer, []);//empty array is for initial state
-  const { loading, data, error, sendRequest, reqExtra,reqIdentifier } = useHttp()
+  const { loading, data, error, sendRequest, reqExtra,reqIdentifier,clear } = useHttp()
   //const [userIngredients, setUserIngredients] = useState([]);
   //const [isLoading, setIsLoading] = useState(false);
   // const [error, setError] = useState();
@@ -59,7 +59,7 @@ const Ingredients = () => {
     // setIsLoading(true);
     //not a dependency due to use of hooks
 
-  }, [])
+  }, [sendRequest])
   //
   const removeIngredientHandler = useCallback(ingredientId => {
     // setIsLoading(true);
@@ -72,10 +72,7 @@ const Ingredients = () => {
 
   }, [sendRequest]);
 
-  const closeError = useCallback(() => {
-
-    // setError(null);
-  }, [])
+  
 
   const ingList = useMemo(() => {
     return (
@@ -88,7 +85,7 @@ const Ingredients = () => {
       <div className="ingredient-form__actions">
         <button onClick={logoutHandler}>Logout</button>
       </div>
-      {error && <ErrorModal onClose={closeError}> </ErrorModal>}
+      {error && <ErrorModal onClose={clear}> </ErrorModal>}
       <IngredientForm loading={loading} onAddIngredient={addIngredientHandler} />
       <section>
         <Search onLoadIngredients={filteredIngredientsHandler} />
