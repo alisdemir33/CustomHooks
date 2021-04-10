@@ -28,7 +28,7 @@ const httpReducer = (httpPrevState, action) => {
 
 
 //will re run every rerender cycle when the componet using this hook rerenders.
-//because of that we put the reducer etc. outisde the hook function code.
+//because of that we put the reducer etc. outside the hook function code.
 
 const useHttp = () => {
 

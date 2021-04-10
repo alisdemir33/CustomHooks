@@ -21,30 +21,26 @@ const ingredientReducer = (currentIngredients, action) => {
 }
 
 const Ingredients = () => {
-  //will not be recreated due to use of redurers. but methods are recreated
-  const [userIngredients, dispatch] = useReducer(ingredientReducer, []);//empty array is for initial state
+  //will not be recreated due to use of reducers. but methods are recreated
+  const [userIngredients, dispatchIngAction] = useReducer(ingredientReducer, []);//empty array is for initial state
   const { loading, data, error, sendRequest, reqExtra,reqIdentifier,clear } = useHttp()
-  //const [userIngredients, setUserIngredients] = useState([]);
-  //const [isLoading, setIsLoading] = useState(false);
-  // const [error, setError] = useState();
-
+ 
   const authContext = useContext(AuthContext);
 
   const logoutHandler = () => {
     authContext.login(false);
   };
 
-  const filteredIngredientsHandler = useCallback((filteredIngredients) => {
-    // setUserIngredients(filteredIngredients);
-    dispatch({ type: 'SET', ingredients: filteredIngredients });//Action da   return action.ingredients; olduğu için : ile verdik
+  const filteredIngredientsHandler = useCallback((filteredIngredients) => {   
+    dispatchIngAction({ type: 'SET', ingredients: filteredIngredients });//Action da   return action.ingredients; olduğu için : ile verdik
   }, []);
 
   useEffect(() => {
      console.log('RENDERING', reqIdentifier)
     if (!loading && !error && reqIdentifier === 'REMOVE_INGREDIENT') {
-      dispatch({ type: 'DELETE', id: reqExtra })
+      dispatchIngAction({ type: 'DELETE', id: reqExtra })
     } else if  (!loading && !error && reqIdentifier === 'ADD_INGREDIENT'){
-      dispatch({ type: 'ADD', ingredient: { id: Math.floor(Math.random() * 1000), ...reqExtra } });
+      dispatchIngAction({ type: 'ADD', ingredient: { id: Math.floor(Math.random() * 1000), ...reqExtra } });
     }
   }, [data, reqExtra,loading,error]);
 
@@ -55,10 +51,8 @@ const Ingredients = () => {
       , JSON.stringify(ingredient)
       , ingredient
       ,'ADD_INGREDIENT'
-    )
-    // setIsLoading(true);
-    //not a dependency due to use of hooks
-
+    ) 
+   
   }, [sendRequest])
   //
   const removeIngredientHandler = useCallback(ingredientId => {
@@ -68,11 +62,7 @@ const Ingredients = () => {
       , null
       ,ingredientId
       ,'REMOVE_INGREDIENT');
-
-
-  }, [sendRequest]);
-
-  
+  }, [sendRequest]);  
 
   const ingList = useMemo(() => {
     return (
