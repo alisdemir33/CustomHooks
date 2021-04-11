@@ -39,7 +39,7 @@ const Search = React.memo(props => {
       onLoadIngredients(ingArr);//  setUserIngredients(ingArr);
     }
 
-  },[data,loading,error,onLoadIngredients])
+  },[data,loading,error,onLoadIngredients]);
 
   return (
    

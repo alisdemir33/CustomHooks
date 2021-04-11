@@ -36,7 +36,7 @@ const Ingredients = () => {
   }, []);
 
   useEffect(() => {
-     console.log('RENDERING', reqIdentifier)
+     console.log('RENDERING ing USEEFFECT', reqIdentifier)
     if (!loading && !error && reqIdentifier === 'REMOVE_INGREDIENT') {
       dispatchIngAction({ type: 'DELETE', id: reqExtra })
     } else if  (!loading && !error && reqIdentifier === 'ADD_INGREDIENT'){
