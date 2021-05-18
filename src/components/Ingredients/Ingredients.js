@@ -23,6 +23,7 @@ const ingredientReducer = (currentIngredients, action) => {
 const Ingredients = () => {
   //will not be recreated due to use of reducers. but methods are recreated
   const [userIngredients, dispatchIngAction] = useReducer(ingredientReducer, []);//empty array is for initial state
+  
   const { loading, data, error, sendRequest, reqExtra,reqIdentifier,clear } = useHttp()
  
   const authContext = useContext(AuthContext);
