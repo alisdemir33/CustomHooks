@@ -38,7 +38,7 @@ const useHttp = () => {
         dispatchHttp({type:'CLEAR'})
     },[]);
 
-    const sendRequest = useCallback ( (url, method, body,reqExtra,reqIdentifier) => {
+    const sendRequest = (url, method, body,reqExtra,reqIdentifier) => {
         // fetch(`https://react-hooks-demo-d6b03-default-rtdb.firebaseio.com/ingredients/${ingredientId}.json`,
 
         dispatchHttp({ type: 'SEND',identifier :reqIdentifier })
@@ -57,7 +57,7 @@ const useHttp = () => {
                 dispatchHttp({ type: 'ERROR', errorData: error })
             });;
 
-    }, []);
+    });
 
     return {
         loading: httpState.loading,
